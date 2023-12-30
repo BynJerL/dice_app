@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 int? RollDice(int curr){
@@ -19,9 +21,16 @@ int? RollDice(int curr){
 }
 
 void main(){
+  int maxIter = 11;
+  int delayFac = 1;
+  int multi = 2; 
   int CurrDice = Random().nextInt(6) + 1;
-  print("Current Number: $CurrDice");
+  for (int iter = 0; iter < maxIter; iter++) {
+    sleep(Duration(milliseconds: delayFac * multi));
+    print("Current Number: $CurrDice");
 
-  int? NextDice = RollDice(CurrDice);
-  print("Next Number: $NextDice");
+    CurrDice = RollDice(CurrDice)!;
+    print("Next Number: $CurrDice");
+    multi *= 2;
+  }
 }
