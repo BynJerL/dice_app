@@ -12,7 +12,10 @@ class DiceAppA extends StatefulWidget {
 }
 
 class _DiceAppAState extends State<DiceAppA> {
-  late int currDice_1, currDice_2, currDice_3;
+  late int diceAmmount;
+  int minDiceAmmount = 1;
+  int maxDiceAmmount = 3;
+  late List currDice = List.filled(maxDiceAmmount, 0);
   int maxIter = 10;
   int delayFac = 1;
   int multi = 2;
@@ -21,10 +24,11 @@ class _DiceAppAState extends State<DiceAppA> {
   @override
   void initState() {
     super.initState();
+    diceAmmount = minDiceAmmount;
 
-    currDice_1 = Random().nextInt(6) + 1;
-    currDice_2 = Random().nextInt(6) + 1;
-    currDice_3 = Random().nextInt(6) + 1;
+    for(int i = 0; i < currDice.length; i++) {
+      currDice[i] = Random().nextInt(6) + 1;
+    }
   }
 
   int? RollDice(int curr){
@@ -40,6 +44,8 @@ class _DiceAppAState extends State<DiceAppA> {
     } else if (curr == 3 || curr == 4) {
       choices = [1,2,5,6];
       next = choices[Random().nextInt(choices.length)];
+    } else {
+      next = Random().nextInt(6) + 1;
     }
 
     return next;
@@ -48,14 +54,13 @@ class _DiceAppAState extends State<DiceAppA> {
   Future<void> RoundDice() async {
     for (int iter = 0; iter < maxIter; iter++) {
       await Future.delayed(Duration(milliseconds: delayFac * multi));
-      print("Current Number: $currDice_1");
 
       setState(() {
-        currDice_1 = RollDice(currDice_1)!;
-        currDice_2 = RollDice(currDice_2)!;
-        currDice_3 = RollDice(currDice_3)!;
+        for(int i = 0; i < currDice.length; i++) {
+          currDice[i] = RollDice(currDice[i])!;
+        }
       });
-      print("Next Number: $currDice_1");
+      
       multi *= 2;
     }
     setState(() {
@@ -73,20 +78,28 @@ class _DiceAppAState extends State<DiceAppA> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(
-                width: 75,
-                image: AssetImage('assets/img/dice_$currDice_1.png')
-              ),
-              SizedBox(width: 10),
-              Image(
-                width: 75,
-                image: AssetImage('assets/img/dice_$currDice_2.png')
-              ),
-              SizedBox(width: 10),
-              Image(
-                width: 75,
-                image: AssetImage('assets/img/dice_$currDice_3.png')
-              )
+              for(int i = 0; i < diceAmmount; i++)
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  child: Image(
+                    width: 75,
+                    image: AssetImage('assets/img/dice_${currDice[i]}.png')
+                  ),
+                ),
+              // Image(
+              //   width: 75,
+              //   image: AssetImage('assets/img/dice_$currDice_1.png')
+              // ),
+              // SizedBox(width: 10),
+              // Image(
+              //   width: 75,
+              //   image: AssetImage('assets/img/dice_$currDice_2.png')
+              // ),
+              // SizedBox(width: 10),
+              // Image(
+              //   width: 75,
+              //   image: AssetImage('assets/img/dice_$currDice_3.png')
+              // )
             ],
           ),
           SizedBox(height: 20),
@@ -98,6 +111,29 @@ class _DiceAppAState extends State<DiceAppA> {
               RoundDice();
               }, 
             child: Text("Roll")
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: (diceAmmount >= maxDiceAmmount) ? null: (){
+                  setState(() {
+                    diceAmmount++;
+                  });
+                  }, 
+                child: Icon(Icons.add)
+              ),
+              SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: (diceAmmount <= minDiceAmmount) ? null: (){
+                  setState(() {
+                    diceAmmount--;
+                  });
+                  }, 
+                child: Icon(Icons.remove)
+              ),
+            ],
           )
         ],
       ),
