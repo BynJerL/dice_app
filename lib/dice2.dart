@@ -26,7 +26,7 @@ class _DiceAppAState extends State<DiceAppA> {
     super.initState();
     diceAmmount = minDiceAmmount;
 
-    for(int i = 0; i < currDice.length; i++) {
+    for(int i = 0; i < diceAmmount; i++) {
       currDice[i] = Random().nextInt(6) + 1;
     }
   }
@@ -56,11 +56,11 @@ class _DiceAppAState extends State<DiceAppA> {
       await Future.delayed(Duration(milliseconds: delayFac * multi));
 
       setState(() {
-        for(int i = 0; i < currDice.length; i++) {
+        for(int i = 0; i < diceAmmount; i++) {
           currDice[i] = RollDice(currDice[i])!;
         }
       });
-      
+
       multi *= 2;
     }
     setState(() {
@@ -128,6 +128,7 @@ class _DiceAppAState extends State<DiceAppA> {
               ElevatedButton(
                 onPressed: (diceAmmount <= minDiceAmmount) ? null: (){
                   setState(() {
+                    currDice[diceAmmount - 1] = 0;
                     diceAmmount--;
                   });
                   }, 
