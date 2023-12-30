@@ -19,6 +19,7 @@ class _DiceAppAState extends State<DiceAppA> {
   int maxIter = 10;
   int delayFac = 1;
   int multi = 2;
+  int sum = 0;
   bool isRolling = false;
 
   @override
@@ -28,6 +29,7 @@ class _DiceAppAState extends State<DiceAppA> {
 
     for(int i = 0; i < diceAmmount; i++) {
       currDice[i] = Random().nextInt(6) + 1;
+      sum += int.parse(currDice[i].toString());
     }
   }
 
@@ -56,8 +58,10 @@ class _DiceAppAState extends State<DiceAppA> {
       await Future.delayed(Duration(milliseconds: delayFac * multi));
 
       setState(() {
+        sum = 0;
         for(int i = 0; i < diceAmmount; i++) {
           currDice[i] = RollDice(currDice[i])!;
+          sum += int.parse(currDice[i].toString());
         }
       });
 
@@ -75,6 +79,14 @@ class _DiceAppAState extends State<DiceAppA> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Text(
+            (isRolling == true)?"":"$sum",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 36,
+            ),
+          ),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -86,20 +98,6 @@ class _DiceAppAState extends State<DiceAppA> {
                     image: AssetImage('assets/img/dice_${currDice[i]}.png')
                   ),
                 ),
-              // Image(
-              //   width: 75,
-              //   image: AssetImage('assets/img/dice_$currDice_1.png')
-              // ),
-              // SizedBox(width: 10),
-              // Image(
-              //   width: 75,
-              //   image: AssetImage('assets/img/dice_$currDice_2.png')
-              // ),
-              // SizedBox(width: 10),
-              // Image(
-              //   width: 75,
-              //   image: AssetImage('assets/img/dice_$currDice_3.png')
-              // )
             ],
           ),
           SizedBox(height: 20),
