@@ -14,7 +14,7 @@ class DiceAppA extends StatefulWidget {
 class _DiceAppAState extends State<DiceAppA> {
   late int diceAmmount;
   int minDiceAmmount = 1;
-  int maxDiceAmmount = 3;
+  int maxDiceAmmount = 4;
   late List currDice = List.filled(maxDiceAmmount, 0);
   int maxIter = 10;
   int delayFac = 1;
@@ -97,73 +97,127 @@ class _DiceAppAState extends State<DiceAppA> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            (isEqual == false)? "": "Lucky",
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: AppBar(
+          title: Text(
+            "Dice App",
             style: TextStyle(
-              fontSize: 18
+              fontSize: 30
             ),
           ),
-          SizedBox(height: 5),
-          Text(
-            (isRolling == true)?"":"$sum",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 36,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            Text(
+              (isEqual == false)? "": "Lucky",
+              style: TextStyle(
+                fontSize: 36
+              ),
             ),
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for(int i = 0; i < diceAmmount; i++)
-                Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 5),
-                  child: Image(
-                    width: 75,
-                    image: AssetImage('assets/img/dice_${currDice[i]}.png')
+            Text(
+              (isRolling == true)?"":"$sum",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 128,
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: 240,
+              height: 240,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for(int i = 0; i < (diceAmmount/2).ceil(); i++) Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for(int j = 0; j < ((diceAmmount - 2*i != 1)? 2: 1); j++) Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Image(
+                              width: 100,
+                              image: AssetImage('assets/img/dice_${currDice[i*2+j]}.png')
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
+                ],
+              ),
+            ),
+      
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     for(int i = 0; i < diceAmmount; i++)
+            //       Padding(
+            //         padding: const EdgeInsets.only(left: 5, right: 5),
+            //         child: Image(
+            //           width: 75,
+            //           image: AssetImage('assets/img/dice_${currDice[i]}.png')
+            //         ),
+            //       ),
+            //   ],
+            // ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: (isRolling == true) ? null: (){
+                setState(() {
+                  isRolling = true;
+                  isEqual = false;
+                });
+                RoundDice();
+                }, 
+              child: Container(
+                width: 150,
+                height: 50,
+                child: Center(
+                  child: Text(
+                    "Roll",
+                    style: TextStyle(
+                      fontSize: 25
+                    ),
+                  )
+                )
+              )
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: (diceAmmount >= maxDiceAmmount) ? null: (){
+                    setState(() {
+                      diceAmmount++;
+                    });
+                    }, 
+                  child: Container(
+                    height: 64,
+                    child: Icon(Icons.add, size: 36))
                 ),
-            ],
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: (isRolling == true) ? null: (){
-              setState(() {
-                isRolling = true;
-                isEqual = false;
-              });
-              RoundDice();
-              }, 
-            child: Text("Roll")
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: (diceAmmount >= maxDiceAmmount) ? null: (){
-                  setState(() {
-                    diceAmmount++;
-                  });
-                  }, 
-                child: Icon(Icons.add)
-              ),
-              SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: (diceAmmount <= minDiceAmmount) ? null: (){
-                  setState(() {
-                    currDice[diceAmmount - 1] = 0;
-                    diceAmmount--;
-                  });
-                  }, 
-                child: Icon(Icons.remove)
-              ),
-            ],
-          )
-        ],
+                SizedBox(width: 45),
+                ElevatedButton(
+                  onPressed: (diceAmmount <= minDiceAmmount) ? null: (){
+                    setState(() {
+                      currDice[diceAmmount - 1] = 0;
+                      diceAmmount--;
+                    });
+                    }, 
+                  child: Container(
+                    height: 64,
+                    child: Icon(Icons.remove, size: 36)
+                  )
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
