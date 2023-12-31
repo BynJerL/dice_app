@@ -21,6 +21,7 @@ class _DiceAppAState extends State<DiceAppA> {
   int multi = 2;
   int sum = 0;
   bool isRolling = false;
+  bool isEqual = false;
 
   @override
   void initState() {
@@ -71,6 +72,26 @@ class _DiceAppAState extends State<DiceAppA> {
       isRolling = false;
       multi = 2;
     });
+    equalChecker();
+  }
+
+  void equalChecker(){
+    bool isInequal = false;
+    for (int iter = 0; iter < diceAmmount; iter++){
+      if (currDice[iter] != currDice[0]){
+        setState(() {
+          isEqual = false;
+          isInequal = true;
+        });
+      }
+    }
+    if (isInequal == false && 
+        diceAmmount != 1) {
+      setState(() {
+        isEqual = true;
+      });
+    }
+    print(isEqual);
   }
 
   @override
@@ -79,6 +100,13 @@ class _DiceAppAState extends State<DiceAppA> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Text(
+            (isEqual == false)? "": "Lucky",
+            style: TextStyle(
+              fontSize: 18
+            ),
+          ),
+          SizedBox(height: 5),
           Text(
             (isRolling == true)?"":"$sum",
             style: TextStyle(
@@ -105,6 +133,7 @@ class _DiceAppAState extends State<DiceAppA> {
             onPressed: (isRolling == true) ? null: (){
               setState(() {
                 isRolling = true;
+                isEqual = false;
               });
               RoundDice();
               }, 
